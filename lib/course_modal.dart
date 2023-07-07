@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:isar_db_tutorial/entities/course.dart';
-import 'package:isar_db_tutorial/isar_service.dart';
+
+import 'entities/course.dart';
+import 'isar_service.dart';
 
 class CourseModal extends StatefulWidget {
   final IsarService service;
@@ -39,7 +40,8 @@ class _CourseModalState extends State<CourseModal> {
             ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    widget.service.saveCourse(Course()..title = _textController.text);
+                    widget.service
+                        .saveCourse(Course()..title = _textController.text);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
                             "New course '${_textController.text}' saved in DB")));

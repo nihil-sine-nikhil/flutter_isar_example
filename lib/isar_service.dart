@@ -1,7 +1,8 @@
 import 'package:isar/isar.dart';
-import 'package:isar_db_tutorial/entities/course.dart';
-import 'package:isar_db_tutorial/entities/student.dart';
-import 'package:isar_db_tutorial/entities/teacher.dart';
+
+import '../entities/course.dart';
+import '../entities/student.dart';
+import '../entities/teacher.dart';
 
 class IsarService {
   late Future<Isar> db;

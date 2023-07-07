@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'entities/course.dart';
+import 'entities/student.dart';
+import 'entities/teacher.dart';
+import 'isar_service.dart';
+
 class CourseDetailPage extends StatelessWidget {
   final Course course;
   final IsarService service;

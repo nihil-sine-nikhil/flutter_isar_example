@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
-import 'package:isar_db_tutorial/entities/course.dart';
+
+import '../entities/course.dart';
 
 part 'teacher.g.dart';
 

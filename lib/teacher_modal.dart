@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:isar_db_tutorial/entities/course.dart';
-import 'package:isar_db_tutorial/entities/teacher.dart';
-import 'package:isar_db_tutorial/isar_service.dart';
+
+import '../entities/course.dart';
+import '../entities/teacher.dart';
+import '../isar_service.dart';
 
 class TeacherModal extends StatefulWidget {
   final IsarService service;
