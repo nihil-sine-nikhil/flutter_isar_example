@@ -7,121 +7,99 @@ part of 'teacher.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetTeacherCollection on Isar {
-  IsarCollection<Teacher> get teachers => collection();
+  IsarCollection<Teacher> get teachers => this.collection();
 }
 
 const TeacherSchema = CollectionSchema(
   name: r'Teacher',
-  schema:
-      r'{"name":"Teacher","idName":"id","properties":[{"name":"name","type":"String"}],"indexes":[],"links":[{"name":"course","target":"Course"}]}',
+  id: 356616661396274803,
+  properties: {
+    r'name': PropertySchema(
+      id: 0,
+      name: r'name',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _teacherEstimateSize,
+  serialize: _teacherSerialize,
+  deserialize: _teacherDeserialize,
+  deserializeProp: _teacherDeserializeProp,
   idName: r'id',
-  propertyIds: {r'name': 0},
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {r'course': 0},
-  backlinkLinkNames: {},
+  indexes: {},
+  links: {
+    r'course': LinkSchema(
+      id: -2175554993497234598,
+      name: r'course',
+      target: r'Course',
+      single: true,
+    )
+  },
+  embeddedSchemas: {},
   getId: _teacherGetId,
-  setId: _teacherSetId,
   getLinks: _teacherGetLinks,
-  attachLinks: _teacherAttachLinks,
-  serializeNative: _teacherSerializeNative,
-  deserializeNative: _teacherDeserializeNative,
-  deserializePropNative: _teacherDeserializePropNative,
-  serializeWeb: _teacherSerializeWeb,
-  deserializeWeb: _teacherDeserializeWeb,
-  deserializePropWeb: _teacherDeserializePropWeb,
-  version: 4,
+  attach: _teacherAttach,
+  version: '3.0.0',
 );
 
-int? _teacherGetId(Teacher object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
+int _teacherEstimateSize(
+  Teacher object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.name.length * 3;
+  return bytesCount;
+}
+
+void _teacherSerialize(
+  Teacher object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.name);
+}
+
+Teacher _teacherDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = Teacher();
+  object.id = id;
+  object.name = reader.readString(offsets[0]);
+  return object;
+}
+
+P _teacherDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-void _teacherSetId(Teacher object, int id) {
-  object.id = id;
+Id _teacherGetId(Teacher object) {
+  return object.id;
 }
 
 List<IsarLinkBase<dynamic>> _teacherGetLinks(Teacher object) {
   return [object.course];
 }
 
-void _teacherSerializeNative(
-    IsarCollection<Teacher> collection,
-    IsarCObject cObj,
-    Teacher object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  final name$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.name);
-  final size = (staticSize + 3 + (name$Bytes.length)) as int;
-  cObj.buffer = alloc(size);
-  cObj.buffer_length = size;
-
-  final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeHeader();
-  writer.writeByteList(offsets[0], name$Bytes);
-}
-
-Teacher _teacherDeserializeNative(IsarCollection<Teacher> collection, int id,
-    IsarBinaryReader reader, List<int> offsets) {
-  final object = Teacher();
+void _teacherAttach(IsarCollection<dynamic> col, Id id, Teacher object) {
   object.id = id;
-  object.name = reader.readString(offsets[0]);
-  _teacherAttachLinks(collection, id, object);
-  return object;
-}
-
-P _teacherDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
-    case 0:
-      return (reader.readString(offset)) as P;
-    default:
-      throw IsarError('Illegal propertyIndex');
-  }
-}
-
-Object _teacherSerializeWeb(
-    IsarCollection<Teacher> collection, Teacher object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, r'id', object.id);
-  IsarNative.jsObjectSet(jsObj, r'name', object.name);
-  return jsObj;
-}
-
-Teacher _teacherDeserializeWeb(
-    IsarCollection<Teacher> collection, Object jsObj) {
-  final object = Teacher();
-  object.id = IsarNative.jsObjectGet(jsObj, r'id');
-  object.name = IsarNative.jsObjectGet(jsObj, r'name') ?? '';
-  _teacherAttachLinks(collection, IsarNative.jsObjectGet(jsObj, r'id'), object);
-  return object;
-}
-
-P _teacherDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case r'id':
-      return (IsarNative.jsObjectGet(jsObj, r'id')) as P;
-    case r'name':
-      return (IsarNative.jsObjectGet(jsObj, r'name') ?? '') as P;
-    default:
-      throw IsarError('Illegal propertyName');
-  }
-}
-
-void _teacherAttachLinks(IsarCollection<dynamic> col, int id, Teacher object) {
-  object.course.attach(col, col.isar.courses, r'course', id);
+  object.course.attach(col, col.isar.collection<Course>(), r'course', id);
 }
 
 extension TeacherQueryWhereSort on QueryBuilder<Teacher, Teacher, QWhere> {
@@ -133,7 +111,7 @@ extension TeacherQueryWhereSort on QueryBuilder<Teacher, Teacher, QWhere> {
 }
 
 extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
-  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idEqualTo(int id) {
+  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -142,7 +120,7 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -164,7 +142,7 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -173,7 +151,7 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<Teacher, Teacher, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -183,8 +161,8 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
   }
 
   QueryBuilder<Teacher, Teacher, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -201,7 +179,7 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
 
 extension TeacherQueryFilter
     on QueryBuilder<Teacher, Teacher, QFilterCondition> {
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEqualTo(int value) {
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -211,7 +189,7 @@ extension TeacherQueryFilter
   }
 
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -224,7 +202,7 @@ extension TeacherQueryFilter
   }
 
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -237,8 +215,8 @@ extension TeacherQueryFilter
   }
 
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -268,8 +246,8 @@ extension TeacherQueryFilter
 
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> nameGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -283,8 +261,8 @@ extension TeacherQueryFilter
 
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> nameLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
@@ -299,9 +277,9 @@ extension TeacherQueryFilter
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -364,23 +342,46 @@ extension TeacherQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> nameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> nameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
 }
+
+extension TeacherQueryObject
+    on QueryBuilder<Teacher, Teacher, QFilterCondition> {}
 
 extension TeacherQueryLinks
     on QueryBuilder<Teacher, Teacher, QFilterCondition> {
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> course(
       FilterQuery<Course> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(
-        query.collection.isar.courses,
-        q,
-        r'course',
-      );
+      return query.link(q, r'course');
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> courseIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'course', 0, true, 0, true);
     });
   }
 }
 
-extension TeacherQueryWhereSortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
+extension TeacherQuerySortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
   QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -394,7 +395,7 @@ extension TeacherQueryWhereSortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
   }
 }
 
-extension TeacherQueryWhereSortThenBy
+extension TeacherQuerySortThenBy
     on QueryBuilder<Teacher, Teacher, QSortThenBy> {
   QueryBuilder<Teacher, Teacher, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {

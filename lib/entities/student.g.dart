@@ -7,121 +7,99 @@ part of 'student.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetStudentCollection on Isar {
-  IsarCollection<Student> get students => collection();
+  IsarCollection<Student> get students => this.collection();
 }
 
 const StudentSchema = CollectionSchema(
   name: r'Student',
-  schema:
-      r'{"name":"Student","idName":"id","properties":[{"name":"name","type":"String"}],"indexes":[],"links":[{"name":"courses","target":"Course"}]}',
+  id: -252783119861727542,
+  properties: {
+    r'name': PropertySchema(
+      id: 0,
+      name: r'name',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _studentEstimateSize,
+  serialize: _studentSerialize,
+  deserialize: _studentDeserialize,
+  deserializeProp: _studentDeserializeProp,
   idName: r'id',
-  propertyIds: {r'name': 0},
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {r'courses': 0},
-  backlinkLinkNames: {},
+  indexes: {},
+  links: {
+    r'courses': LinkSchema(
+      id: 4981409246323567500,
+      name: r'courses',
+      target: r'Course',
+      single: false,
+    )
+  },
+  embeddedSchemas: {},
   getId: _studentGetId,
-  setId: _studentSetId,
   getLinks: _studentGetLinks,
-  attachLinks: _studentAttachLinks,
-  serializeNative: _studentSerializeNative,
-  deserializeNative: _studentDeserializeNative,
-  deserializePropNative: _studentDeserializePropNative,
-  serializeWeb: _studentSerializeWeb,
-  deserializeWeb: _studentDeserializeWeb,
-  deserializePropWeb: _studentDeserializePropWeb,
-  version: 4,
+  attach: _studentAttach,
+  version: '3.0.0',
 );
 
-int? _studentGetId(Student object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
+int _studentEstimateSize(
+  Student object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.name.length * 3;
+  return bytesCount;
+}
+
+void _studentSerialize(
+  Student object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.name);
+}
+
+Student _studentDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = Student();
+  object.id = id;
+  object.name = reader.readString(offsets[0]);
+  return object;
+}
+
+P _studentDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-void _studentSetId(Student object, int id) {
-  object.id = id;
+Id _studentGetId(Student object) {
+  return object.id;
 }
 
 List<IsarLinkBase<dynamic>> _studentGetLinks(Student object) {
   return [object.courses];
 }
 
-void _studentSerializeNative(
-    IsarCollection<Student> collection,
-    IsarCObject cObj,
-    Student object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  final name$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.name);
-  final size = (staticSize + 3 + (name$Bytes.length)) as int;
-  cObj.buffer = alloc(size);
-  cObj.buffer_length = size;
-
-  final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeHeader();
-  writer.writeByteList(offsets[0], name$Bytes);
-}
-
-Student _studentDeserializeNative(IsarCollection<Student> collection, int id,
-    IsarBinaryReader reader, List<int> offsets) {
-  final object = Student();
+void _studentAttach(IsarCollection<dynamic> col, Id id, Student object) {
   object.id = id;
-  object.name = reader.readString(offsets[0]);
-  _studentAttachLinks(collection, id, object);
-  return object;
-}
-
-P _studentDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
-    case 0:
-      return (reader.readString(offset)) as P;
-    default:
-      throw IsarError('Illegal propertyIndex');
-  }
-}
-
-Object _studentSerializeWeb(
-    IsarCollection<Student> collection, Student object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, r'id', object.id);
-  IsarNative.jsObjectSet(jsObj, r'name', object.name);
-  return jsObj;
-}
-
-Student _studentDeserializeWeb(
-    IsarCollection<Student> collection, Object jsObj) {
-  final object = Student();
-  object.id = IsarNative.jsObjectGet(jsObj, r'id');
-  object.name = IsarNative.jsObjectGet(jsObj, r'name') ?? '';
-  _studentAttachLinks(collection, IsarNative.jsObjectGet(jsObj, r'id'), object);
-  return object;
-}
-
-P _studentDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case r'id':
-      return (IsarNative.jsObjectGet(jsObj, r'id')) as P;
-    case r'name':
-      return (IsarNative.jsObjectGet(jsObj, r'name') ?? '') as P;
-    default:
-      throw IsarError('Illegal propertyName');
-  }
-}
-
-void _studentAttachLinks(IsarCollection<dynamic> col, int id, Student object) {
-  object.courses.attach(col, col.isar.courses, r'courses', id);
+  object.courses.attach(col, col.isar.collection<Course>(), r'courses', id);
 }
 
 extension StudentQueryWhereSort on QueryBuilder<Student, Student, QWhere> {
@@ -133,7 +111,7 @@ extension StudentQueryWhereSort on QueryBuilder<Student, Student, QWhere> {
 }
 
 extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
-  QueryBuilder<Student, Student, QAfterWhereClause> idEqualTo(int id) {
+  QueryBuilder<Student, Student, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -142,7 +120,7 @@ extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
     });
   }
 
-  QueryBuilder<Student, Student, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<Student, Student, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -164,7 +142,7 @@ extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
     });
   }
 
-  QueryBuilder<Student, Student, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<Student, Student, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -173,7 +151,7 @@ extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
     });
   }
 
-  QueryBuilder<Student, Student, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<Student, Student, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -183,8 +161,8 @@ extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
   }
 
   QueryBuilder<Student, Student, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -201,7 +179,7 @@ extension StudentQueryWhere on QueryBuilder<Student, Student, QWhereClause> {
 
 extension StudentQueryFilter
     on QueryBuilder<Student, Student, QFilterCondition> {
-  QueryBuilder<Student, Student, QAfterFilterCondition> idEqualTo(int value) {
+  QueryBuilder<Student, Student, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -211,7 +189,7 @@ extension StudentQueryFilter
   }
 
   QueryBuilder<Student, Student, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -224,7 +202,7 @@ extension StudentQueryFilter
   }
 
   QueryBuilder<Student, Student, QAfterFilterCondition> idLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -237,8 +215,8 @@ extension StudentQueryFilter
   }
 
   QueryBuilder<Student, Student, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -268,8 +246,8 @@ extension StudentQueryFilter
 
   QueryBuilder<Student, Student, QAfterFilterCondition> nameGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -283,8 +261,8 @@ extension StudentQueryFilter
 
   QueryBuilder<Student, Student, QAfterFilterCondition> nameLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
@@ -299,9 +277,9 @@ extension StudentQueryFilter
   QueryBuilder<Student, Student, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -364,23 +342,90 @@ extension StudentQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> nameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> nameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'name',
+        value: '',
+      ));
+    });
+  }
 }
+
+extension StudentQueryObject
+    on QueryBuilder<Student, Student, QFilterCondition> {}
 
 extension StudentQueryLinks
     on QueryBuilder<Student, Student, QFilterCondition> {
   QueryBuilder<Student, Student, QAfterFilterCondition> courses(
       FilterQuery<Course> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(
-        query.collection.isar.courses,
-        q,
-        r'courses',
-      );
+      return query.link(q, r'courses');
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> coursesLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'courses', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> coursesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'courses', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> coursesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'courses', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> coursesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'courses', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition>
+      coursesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'courses', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Student, Student, QAfterFilterCondition> coursesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'courses', lower, includeLower, upper, includeUpper);
     });
   }
 }
 
-extension StudentQueryWhereSortBy on QueryBuilder<Student, Student, QSortBy> {
+extension StudentQuerySortBy on QueryBuilder<Student, Student, QSortBy> {
   QueryBuilder<Student, Student, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -394,7 +439,7 @@ extension StudentQueryWhereSortBy on QueryBuilder<Student, Student, QSortBy> {
   }
 }
 
-extension StudentQueryWhereSortThenBy
+extension StudentQuerySortThenBy
     on QueryBuilder<Student, Student, QSortThenBy> {
   QueryBuilder<Student, Student, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {

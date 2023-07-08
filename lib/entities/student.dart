@@ -6,7 +6,7 @@ part 'student.g.dart';
 
 @Collection()
 class Student {
-  Id id = isarAutoIncrementId;
+  Id id = Isar.autoIncrement;
   late String name;
   final courses = IsarLinks<Course>();
 }
