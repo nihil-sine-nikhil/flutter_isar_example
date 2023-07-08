@@ -17,10 +17,12 @@ class _CourseModalState extends State<CourseModal> {
 
   @override
   Widget build(BuildContext context) {
+    var bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
     return Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding:
+            EdgeInsets.only(right: 8, left: 8, top: 8, bottom: bottomPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
