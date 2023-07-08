@@ -1,8 +1,8 @@
 import 'package:isar/isar.dart';
+import 'package:isarhive/entities/student.dart';
 
-import '../entities/course.dart';
-import '../entities/student.dart';
-import '../entities/teacher.dart';
+import 'entities/course.dart';
+import 'entities/teacher.dart';
 
 class IsarService {
   late Future<Isar> db;
@@ -33,7 +33,7 @@ class IsarService {
 
   Stream<List<Course>> listenToCourses() async* {
     final isar = await db;
-    yield* isar.courses.where().watch(initialReturn: true);
+    yield* isar.courses.where().watch(fireImmediately: true);
   }
 
   Future<void> cleanDb() async {

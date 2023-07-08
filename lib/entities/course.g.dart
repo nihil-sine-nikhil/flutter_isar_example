@@ -7,115 +7,108 @@ part of 'course.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetCourseCollection on Isar {
-  IsarCollection<Course> get courses => collection();
+  IsarCollection<Course> get courses => this.collection();
 }
 
 const CourseSchema = CollectionSchema(
   name: r'Course',
-  schema:
-      r'{"name":"Course","idName":"id","properties":[{"name":"title","type":"String"}],"indexes":[],"links":[]}',
+  id: -5832084671214696602,
+  properties: {
+    r'title': PropertySchema(
+      id: 0,
+      name: r'title',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _courseEstimateSize,
+  serialize: _courseSerialize,
+  deserialize: _courseDeserialize,
+  deserializeProp: _courseDeserializeProp,
   idName: r'id',
-  propertyIds: {r'title': 0},
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {r'students': 0, r'teacher': 1},
-  backlinkLinkNames: {r'students': r'courses', r'teacher': r'course'},
+  indexes: {},
+  links: {
+    r'teacher': LinkSchema(
+      id: -2874831347665488055,
+      name: r'teacher',
+      target: r'Teacher',
+      single: true,
+      linkName: r'course',
+    ),
+    r'students': LinkSchema(
+      id: 2157553606399243280,
+      name: r'students',
+      target: r'Student',
+      single: false,
+      linkName: r'courses',
+    )
+  },
+  embeddedSchemas: {},
   getId: _courseGetId,
-  setId: _courseSetId,
   getLinks: _courseGetLinks,
-  attachLinks: _courseAttachLinks,
-  serializeNative: _courseSerializeNative,
-  deserializeNative: _courseDeserializeNative,
-  deserializePropNative: _courseDeserializePropNative,
-  serializeWeb: _courseSerializeWeb,
-  deserializeWeb: _courseDeserializeWeb,
-  deserializePropWeb: _courseDeserializePropWeb,
-  version: 4,
+  attach: _courseAttach,
+  version: '3.0.0',
 );
 
-int? _courseGetId(Course object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+int _courseEstimateSize(
+  Course object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.title.length * 3;
+  return bytesCount;
 }
 
-void _courseSetId(Course object, int id) {
-  object.id = id;
+void _courseSerialize(
+  Course object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.title);
 }
 
-List<IsarLinkBase<dynamic>> _courseGetLinks(Course object) {
-  return [object.students, object.teacher];
-}
-
-void _courseSerializeNative(IsarCollection<Course> collection, IsarCObject cObj,
-    Course object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
-  final title$Bytes = IsarBinaryWriter.utf8Encoder.convert(object.title);
-  final size = (staticSize + 3 + (title$Bytes.length)) as int;
-  cObj.buffer = alloc(size);
-  cObj.buffer_length = size;
-
-  final buffer = IsarNative.bufAsBytes(cObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeHeader();
-  writer.writeByteList(offsets[0], title$Bytes);
-}
-
-Course _courseDeserializeNative(IsarCollection<Course> collection, int id,
-    IsarBinaryReader reader, List<int> offsets) {
+Course _courseDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = Course();
   object.id = id;
   object.title = reader.readString(offsets[0]);
-  _courseAttachLinks(collection, id, object);
   return object;
 }
 
-P _courseDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+P _courseDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readString(offset)) as P;
     default:
-      throw IsarError('Illegal propertyIndex');
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Object _courseSerializeWeb(IsarCollection<Course> collection, Course object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, r'id', object.id);
-  IsarNative.jsObjectSet(jsObj, r'title', object.title);
-  return jsObj;
+Id _courseGetId(Course object) {
+  return object.id;
 }
 
-Course _courseDeserializeWeb(IsarCollection<Course> collection, Object jsObj) {
-  final object = Course();
-  object.id = IsarNative.jsObjectGet(jsObj, r'id');
-  object.title = IsarNative.jsObjectGet(jsObj, r'title') ?? '';
-  _courseAttachLinks(collection, IsarNative.jsObjectGet(jsObj, r'id'), object);
-  return object;
+List<IsarLinkBase<dynamic>> _courseGetLinks(Course object) {
+  return [object.teacher, object.students];
 }
 
-P _courseDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case r'id':
-      return (IsarNative.jsObjectGet(jsObj, r'id')) as P;
-    case r'title':
-      return (IsarNative.jsObjectGet(jsObj, r'title') ?? '') as P;
-    default:
-      throw IsarError('Illegal propertyName');
-  }
-}
-
-void _courseAttachLinks(IsarCollection<dynamic> col, int id, Course object) {
-  object.students.attach(col, col.isar.students, r'students', id);
-  object.teacher.attach(col, col.isar.teachers, r'teacher', id);
+void _courseAttach(IsarCollection<dynamic> col, Id id, Course object) {
+  object.id = id;
+  object.teacher.attach(col, col.isar.collection<Teacher>(), r'teacher', id);
+  object.students.attach(col, col.isar.collection<Student>(), r'students', id);
 }
 
 extension CourseQueryWhereSort on QueryBuilder<Course, Course, QWhere> {
@@ -127,7 +120,7 @@ extension CourseQueryWhereSort on QueryBuilder<Course, Course, QWhere> {
 }
 
 extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
-  QueryBuilder<Course, Course, QAfterWhereClause> idEqualTo(int id) {
+  QueryBuilder<Course, Course, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -136,7 +129,7 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
     });
   }
 
-  QueryBuilder<Course, Course, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<Course, Course, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -158,7 +151,7 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
     });
   }
 
-  QueryBuilder<Course, Course, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<Course, Course, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -167,7 +160,7 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
     });
   }
 
-  QueryBuilder<Course, Course, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<Course, Course, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -177,8 +170,8 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
   }
 
   QueryBuilder<Course, Course, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -194,7 +187,7 @@ extension CourseQueryWhere on QueryBuilder<Course, Course, QWhereClause> {
 }
 
 extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
-  QueryBuilder<Course, Course, QAfterFilterCondition> idEqualTo(int value) {
+  QueryBuilder<Course, Course, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -204,7 +197,7 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
   }
 
   QueryBuilder<Course, Course, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -217,7 +210,7 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
   }
 
   QueryBuilder<Course, Course, QAfterFilterCondition> idLessThan(
-    int value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -230,8 +223,8 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
   }
 
   QueryBuilder<Course, Course, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -261,8 +254,8 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
 
   QueryBuilder<Course, Course, QAfterFilterCondition> titleGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -276,8 +269,8 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
 
   QueryBuilder<Course, Course, QAfterFilterCondition> titleLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
@@ -292,9 +285,9 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
   QueryBuilder<Course, Course, QAfterFilterCondition> titleBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -357,33 +350,100 @@ extension CourseQueryFilter on QueryBuilder<Course, Course, QFilterCondition> {
       ));
     });
   }
-}
 
-extension CourseQueryLinks on QueryBuilder<Course, Course, QFilterCondition> {
-  QueryBuilder<Course, Course, QAfterFilterCondition> students(
-      FilterQuery<Student> q) {
+  QueryBuilder<Course, Course, QAfterFilterCondition> titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.link(
-        query.collection.isar.students,
-        q,
-        r'students',
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: '',
+      ));
     });
   }
 
+  QueryBuilder<Course, Course, QAfterFilterCondition> titleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'title',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension CourseQueryObject on QueryBuilder<Course, Course, QFilterCondition> {}
+
+extension CourseQueryLinks on QueryBuilder<Course, Course, QFilterCondition> {
   QueryBuilder<Course, Course, QAfterFilterCondition> teacher(
       FilterQuery<Teacher> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(
-        query.collection.isar.teachers,
-        q,
-        r'teacher',
-      );
+      return query.link(q, r'teacher');
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> teacherIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'teacher', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> students(
+      FilterQuery<Student> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'students');
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'students', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'students', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'students', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'students', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'students', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<Course, Course, QAfterFilterCondition> studentsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'students', lower, includeLower, upper, includeUpper);
     });
   }
 }
 
-extension CourseQueryWhereSortBy on QueryBuilder<Course, Course, QSortBy> {
+extension CourseQuerySortBy on QueryBuilder<Course, Course, QSortBy> {
   QueryBuilder<Course, Course, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -397,8 +457,7 @@ extension CourseQueryWhereSortBy on QueryBuilder<Course, Course, QSortBy> {
   }
 }
 
-extension CourseQueryWhereSortThenBy
-    on QueryBuilder<Course, Course, QSortThenBy> {
+extension CourseQuerySortThenBy on QueryBuilder<Course, Course, QSortThenBy> {
   QueryBuilder<Course, Course, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
